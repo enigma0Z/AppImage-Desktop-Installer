@@ -4,7 +4,7 @@ A Python script that automatically creates desktop entries for AppImage files. I
 
 ## Features
 
-**adrfrank** (Original Creator)
+**[**adrfrank** (Original Creator)](https://github.com/adrfrank/appimage_desktop_creator)**
 - Automatically creates desktop entries for AppImage files
 - Recursively monitors directories for new AppImages
 - Extracts application name and icon from AppImages
@@ -12,7 +12,7 @@ A Python script that automatically creates desktop entries for AppImage files. I
 - Supports relative and absolute paths
 - Creates desktop entries in the user's local applications directory
 
-**Klotheju**
+**[**Klotheju**](https://github.com/Klotheju/updated_appimage_desktop_creator/)**
 - Auto-makes AppImages executable (fixes manually having to 'chmod +x' so it creates a '.desktop' file)
 - Visual feedback in ~/appimage-watcher.log
 - Debug-friendly output
