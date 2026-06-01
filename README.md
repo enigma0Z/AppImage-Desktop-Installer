@@ -2,7 +2,11 @@
 
 # AppImage Desktop Creator (Updated)
 
-A Python script that automatically creates desktop entries for AppImage files. It monitors a specified directory (and its subdirectories) for AppImage files and creates corresponding `.desktop` files, making your AppImages easily accessible from your desktop environment.
+A Python script that creates desktop entries for AppImage files, either on-demand or automatically.
+
+For automatic appimage installation, it monitors a specified directory (and its subdirectories) for AppImage files and creates corresponding `.desktop` files, making your AppImages easily accessible from your desktop environment.
+
+For manual appimage installation, the `install` and `uninstall` subcommands are provided
 
 ## Features
 
@@ -19,54 +23,61 @@ A Python script that automatically creates desktop entries for AppImage files. I
 - Visual feedback in ~/appimage-watcher.log
 - Debug-friendly output
 
+**[**enigma0Z**](https://github.com/enigma0Z/Appimage-Desktop-Installer)**
+- Add install/uninstall subcommands
+- Add PyPi-ready packaging
+
 ## Requirements
 
 - Python 3.x
 - Linux operating system
-- Required Python packages:
-  - `inotify`
-  - `shutil`
-  - `subprocess`
+- [pipx](https://pipx.pypa.io/stable/how-to/install-pipx/)
 
-## Installation
+## Installation (developer/tinkerer)
 
-1. Clone this repository or download the script:
+1. Clone this repository:
 ```bash
-git clone https://github.com/Klotheju/updated_appimage_desktop_creator
-cd updated_appimage_desktop_creator
+git clone https://github.com/enigma0Z/AppImage-Desktop-Installer.git
 ```
 
-2. Install the required Python package:
+2. Install using pipx:
 ```bash
-python -m venv venv
-source venv/bin/activate
-pip install inotify
-```
-3. Make it run in background (Daemon Mode - Universal):
-```bash
-cd /path/to/appimage_desktop_creator
-source venv/bin/activate
-nohup venv/bin/python appimage_desktop_creator.py > ~/appimage-watcher.log 2>&1 &
-echo $! > ~/appimage-watcher.pid
+pipx install -e .
 ```
 
 ## Usage
 
-1. Edit the `WATCH_DIR` variable in the script to point to your desired directory:
-```python
-WATCH_DIR = os.path.expanduser('~/Applications')  # Change this to your preferred directory to detect and watch for .AppImage
-```
+### Monitor a directory (default is ~/Applications)
 
-2. Run the script:
 ```bash
-python appimage_desktop_creator.py
+nohup adi watch > ~/appimage-watcher.log 2>&1 &
+echo $! > ~/appimage-watcher.pid
 ```
 
-The script will:
+In watch mode, the script will:
 - Create desktop entries for existing AppImages in the watch directory
 - Monitor the directory for new AppImages
 - Create desktop entries for new AppImages automatically
 - Remove desktop entries when AppImages are deleted
+
+### Manually install an appimage
+
+```bash
+adi install path/to/the/application.AppImage
+```
+
+### Manually uninstall an appimage
+
+```bash
+adi uninstall path/to/the/installed/application.AppImage
+```
+
+### Notes
+
+You can override the default directory of `~/Applications` by specifying `--install-dir` on the CLI
+```bash
+adi --install-dir ~/SomethingElse daemon
+```
 
 ## Directory Structure
 
@@ -74,21 +85,10 @@ The script will:
 - `~/.local/share/applications` - Desktop entries are created here
 - `~/.local/share/icons` - Application icons are stored here
 
-## How It Works
-
-1. The script monitors the specified directory and its subdirectories for AppImage files
-2. When an AppImage is detected:
-   - It extracts the AppImage to a temporary directory
-   - Reads the application name and icon from the embedded .desktop file
-   - Copies the icon to the local icons directory
-   - Creates a desktop entry in the local applications directory
-3. When an AppImage is removed:
-   - The corresponding desktop entry is automatically deleted
-
 ## Customization
 
-You can customize the script by modifying:
-- `WATCH_DIR`: Change the directory to monitor
+You can customize the script (`src/appimage_desktop_installer/__init__.py`) by modifying:
+- `USER_APP_DIR`: Change the default directory to monitor / where apps are installed by the `install` subcommand
 - `DESKTOP_DIR`: Change where desktop entries are created
 - Desktop entry template in the `generate_desktop_file` function
 
@@ -99,4 +99,3 @@ This project is open source and available under the MIT License.
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request. 
-

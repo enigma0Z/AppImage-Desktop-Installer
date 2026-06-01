@@ -8,8 +8,8 @@ from . import USER_APP_DIR, monitor_directory, process_appimage, uninstall
 
 parser = ArgumentParser()
 parser.add_argument('action', choices=['watch', 'install', 'uninstall'])
-parser.add_argument('--install-dir', default=USER_APP_DIR)
-parser.add_argument('appimage', nargs='?')
+parser.add_argument('--install-dir', default=USER_APP_DIR, help=f'Override the default installation directory with this one (defaults to {USER_APP_DIR})')
+parser.add_argument('appimage', nargs='?', help='The path to the app image to install/uninstall')
 
 class NotADirectoryError(Exception): ...
 
