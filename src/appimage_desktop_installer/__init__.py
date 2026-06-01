@@ -1,10 +1,9 @@
 import os
 import subprocess
-import time
 import shutil
 import inotify.adapters
 
-WATCH_DIR = os.path.expanduser('~/Applications')  # Change this to your preferred directory to detect and watch for .AppImage
+USER_APP_DIR = os.path.expanduser('~/Applications')
 DESKTOP_DIR = os.path.expanduser('~/.local/share/applications')
 
 def find_appimages(directory):
@@ -113,21 +112,31 @@ def process_appimage(appimage_path):
     else:
         print(f"✗ Failed to process: {appimage_path}")
 
-def monitor_directory():
+def uninstall(appimage: str, remove_appimage=False):
+    if (remove_appimage):
+        os.remove(appimage)
+
+    desktop_file = os.path.join(DESKTOP_DIR, f"{os.path.splitext(appimage)[0]}.desktop")
+    if os.path.exists(desktop_file):
+        os.remove(desktop_file)
+        print(f"Removed: {desktop_file}")
+
+def monitor_directory(watch_dir: str = USER_APP_DIR):
     # Initial scan
-    appimages = find_appimages(WATCH_DIR)
+    appimages = find_appimages(watch_dir)
     for appimage_path in appimages:
         process_appimage(appimage_path)
 
     i = inotify.adapters.Inotify()
     # Add watch recursively
-    for root, dirs, _ in os.walk(WATCH_DIR):
+    for root, dirs, _ in os.walk(watch_dir):
         i.add_watch(root)
         for dir_name in dirs:
             i.add_watch(os.path.join(root, dir_name))
 
-    print(f"Monitoring {WATCH_DIR} and subdirectories for AppImages...")
+    print(f"Monitoring {watch_dir} and subdirectories for AppImages...")
     for event in i.event_gen(yield_nones=False):
+        assert event is not None
         (_, type_names, path, filename) = event
         if filename.endswith('.AppImage'):
             file_path = os.path.join(path, filename)
@@ -140,8 +149,3 @@ def monitor_directory():
                 if os.path.exists(desktop_file):
                     os.remove(desktop_file)
                     print(f"Removed: {desktop_file}")
-
-if __name__ == "__main__":
-    # Ensure the watch directory exists
-    os.makedirs(WATCH_DIR, exist_ok=True)
-    monitor_directory()
