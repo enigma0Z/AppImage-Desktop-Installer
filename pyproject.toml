@@ -1,0 +1,16 @@
+[project]
+name = "appimage-desktop-integrator"
+version = "0.1.0"
+description = "Integrate appimages into your desktop environment"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "inotify>=0.2.12",
+]
+
+[project.scripts]
+adi = "appimage_desktop_installer.__main__:main"
+
+[build-system]
+requires = ["uv_build>=0.11.14,<0.12.0"]
+build-backend = "uv_build"
