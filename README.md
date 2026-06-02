@@ -42,7 +42,7 @@ git clone https://github.com/enigma0Z/AppImage-Desktop-Installer.git
 
 2. Install using pipx:
 ```bash
-pipx install -e .
+pipx install -e ./AppImage-Desktop-Installer
 ```
 
 ## Usage
